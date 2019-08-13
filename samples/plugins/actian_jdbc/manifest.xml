@@ -5,6 +5,15 @@
     <vendor name="vendor"/>
     <driver name="driver"/>
     <customizations>
+
+      <!--
+      look at odbc connector and review CAP_ODBC_*, according to
+      https://github.com/tableau/connector-plugin-sdk/issues/215 there are
+      undocumented JDBC equivilents.
+      -->
+      <customization name="CAP_JDBC_BIND_DETECT_ALIAS_CASE_FOLDING" value="yes"/>
+
+
       <customization name="CAP_SELECT_INTO" value="yes"/>
       <customization name="CAP_SELECT_TOP_INTO" value="yes"/>
       <customization name="CAP_CREATE_TEMP_TABLES" value="yes"/>
