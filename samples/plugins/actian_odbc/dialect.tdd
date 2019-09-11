@@ -12,6 +12,18 @@
     </function>
 
     <!-- TODO review test suite results and https://github.com/tableau/connector-plugin-sdk/blob/master/samples/components/dialects/full_dialect.tdd -->
+
+    <function group='operator' name='+' return-type='date'>
+       <formula>(%1 + %2)</formula>
+       <argument type='date' />
+       <argument type='date' />
+    </function>
+    <function group='operator' name='+' return-type='datetime'>
+       <formula>(%1 + %2)</formula>
+       <argument type='date' />
+       <argument type='datetime' />
+    </function>
+
     <function group='string' name='LEN' return-type='int'>
       <formula>LENGTH(%1)</formula>
       <argument type='str' />
@@ -65,6 +77,21 @@
 
   <sql-format>
     <!--
+      base-types
+        Map of Tableau types to basic DB types
+    -->
+
+    <base-types>
+      <local-type name='real' value='DOUBLE PRECISION' />
+      <local-type name='int' value='BIGINT' />
+      <local-type name='str' value='VARCHAR' />
+      <local-type name='bool' value='BOOLEAN' />
+      <local-type name='date' value='ANSIDATE' />
+      <local-type name='datetime' value='TIMESTAMP' />
+    </base-types>
+
+
+    <!--
       format-create-table
       Piece-by-piece formula for creating a table.
       Predicates can be used with tokens that only correspond
@@ -88,6 +115,51 @@
       <formula>)</formula>
       <formula predicate='AnyTemp'> ON COMMIT PRESERVE ROWS</formula>
     </format-create-table>
+
+    <!--
+     format-drop-table
+     Format for dropping a table. %1 is the table name.
+     Each formula is executed as a separate statement.
+    -->
+    <format-drop-table>
+       <formula>DROP TABLE IF EXISTS %1 </formula>
+    </format-drop-table>
+
+    <!--
+       format-insert
+       Strategy for formatting an INSERT statement
+       [Default]Individual: Separate INSERT query for each row
+       Bulk: Single INSERT query can insert multiple rows at once
+    -->
+    <format-insert value='Bulk' />
+    <!--
+       format-select
+       Piece-by-piece formula for defining a SELECT statement
+     -->
+
+    <!--
+          format-order-by
+          [Default]DirectionOnly: ORDER BY col ASC/DESC
+          Nulls: ORDER BY col ASC NULLS FIRST/DESC NULLS LAST
+    -->
+    <format-order-by value='Nulls' />
+
+    <format-select>
+       <part name='Into' value='DECLARE GLOBAL TEMPORARY TABLE %1 ON COMMIT PRESERVE ROWS AS' />
+       <part name='Top' value='SELECT * FROM (' />
+       <part name='Select' value='SELECT %1' />
+       <part name='From' value='FROM %1' />
+       <part name='Where' value='WHERE %1' />
+       <part name='Group' value='GROUP BY %1' />
+       <part name='Having' value='HAVING %1' />
+       <part name='OrderBy' value='ORDER BY %1' />
+       <part name='Top' value=') WHERE ROWNUM &lt;= %1' />
+       <part name='TopPercent' value='TABLESAMPLE BERNOULLI(%1)' />
+       <part name='TopSamplePercent' value='TABLESAMPLE BERNOULLI(%1)' />
+       <part name='TopSampleRecords' value='ORDER BY rand()' />
+       <part name='TopSampleRecords' value='%1' />
+    </format-select>
+
   </sql-format>
 
 </dialect>
