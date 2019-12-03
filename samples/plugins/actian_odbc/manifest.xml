@@ -1,20 +1,11 @@
 <?xml version='1.0' encoding='utf-8' ?>
 
 <connector-plugin class='actian_odbc' superclass='odbc' plugin-version='0.0.0' name='Actian ODBC' version='18.1'>
-  <!--
-      Including company_name results in "By Actian" being added to the end of the connector name.
-      Not including company_name but including <vendor-information> with url,
-      results in connector not being displayed.
-  -->
-  <vendor-information>
-    <company name='Actian' />
-    <support-link url='https://communities.actian.com' />
-  </vendor-information>
-
   <connection-customization class="actian_odbc" enabled="true" version="10.0">
     <vendor name="vendor"/>
     <driver name="driver"/>
     <customizations>
+      <!-- MANIFEST_VECTOR 2.2 added CAP_QUERY_HAVING_REQUIRES_GROUP_BY = no-->
 
       <!-- See https://tableau.github.io/connector-plugin-sdk/docs/capabilities.html for capabilities names and explanations -->
       <!--
@@ -31,10 +22,12 @@
       <customization name="CAP_SELECT_TOP_INTO" value="yes"/>
       <customization name="CAP_CREATE_TEMP_TABLES" value="yes"/>
       <customization name="CAP_INDEX_TEMP_TABLES" value="yes"/>  <!-- yes we suport, but usually not needed does setting this to yes hurt us? -->
-	  <customization name="CAP_QUERY_BOOL_IDENTIFIER_TO_LOGICAL" value="no"/>
-      <customization name="CAP_QUERY_BOOLEXPR_TO_INTEXPR" value="no"/>  <!-- TODO Review -->
+      <customization name="CAP_QUERY_BOOLEXPR_TO_INTEXPR" value="yes"/>   <!-- bolke01 - 2019-10-23 changed from no to yes Potentially resolves II-4848-->
       <customization name="CAP_QUERY_GROUP_BY_BOOL" value="yes"/>   <!-- supported, undergone prelim testing -->
-      <customization name="CAP_QUERY_GROUP_BY_DEGREE" value="yes"/>   <!-- supported, undergone prelim testing -->
+      <customization name="CAP_QUERY_GROUP_BY_DEGREE" value="yes"/>   <!-- supported, undergone prelim testing --><!-- bolke01 adeded 2019-11-25 changed to no for test-->
+      <customization name="CAP_QUERY_GROUP_BY_ALIAS" value="yes"/>   <!-- supported, undergone prelim testing --><!-- bolke01 adeded 2019-11-25 -->
+      <customization name="CAP_QUERY_INCLUDE_GROUP_BY_COLUMNS_IN_SELECT" value="no"/>   <!-- is 'no' the default, undergone prelim testing --><!-- bolke01 adeded 2019-11-25 -->
+      <customization name="CAP_QUERY_HAVING_REQUIRES_GROUP_BY" value="no"/> <!-- bolke01 adeded 2019-11-26 -->
       <customization name="CAP_QUERY_SORT_BY" value="yes"/>   <!-- supported, undergone prelim testing -->
       <customization name="CAP_QUERY_SUBQUERIES" value="yes"/>
       <customization name="CAP_QUERY_TOP_N" value="yes"/>  <!--Support for datasource preview via the FIRST keyword, same syntax/semantics as TOP -->
@@ -46,9 +39,10 @@
       <customization name='CAP_QUERY_TOP_0_METADATA' value='no' />
       <customization name="CAP_QUERY_WHERE_FALSE_METADATA" value="yes"/>
       <customization name="CAP_QUERY_SUBQUERIES_WITH_TOP" value="no"/>  <!-- enhancement https://alm.actian.com/jira/browse/II-541 -->
-      <customization name="CAP_SUPPORTS_SPLIT_FROM_LEFT" value="yes"/>
-      <customization name="CAP_SUPPORTS_SPLIT_FROM_RIGHT" value="yes"/>
+      <customization name="CAP_SUPPORTS_SPLIT_FROM_LEFT" value="no"/> <!-- bolke01 - 2019-10-23 changed from yes to no -->
+      <customization name="CAP_SUPPORTS_SPLIT_FROM_RIGHT" value="no"/> <!-- bolke01 - 2019-10-23 changed from yes to no -->
       <customization name="CAP_SUPPORTS_UNION" value="yes"/>
+      <customization name="CAP_QUERY_SUBQUERY_QUERY_CONTEXT" value="yes"/> <!-- bolke01 adeded 2019-11-25 -->
       <customization name="CAP_QUERY_ALLOW_PARTIAL_AGGREGATION" value="yes"/>  <!-- default setting is yes -->
       <customization name="CAP_QUERY_TIME_REQUIRES_CAST" value="yes"/>
       <customization name='CAP_QUERY_SELECT_ALIASES_SORTED' value='yes' /> <!-- Added to support LOD in Desktop dashboards- not clear from docs why this impacts LoD, no change to test suite results -->
