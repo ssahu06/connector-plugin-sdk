@@ -5,7 +5,7 @@
          version='18.1'>
   <function-map>
   <function group='numeric' name='VERSION' return-type='str'>
-      <formula>VARCHAR(&apos;18.1-80.00&apos;</formula>
+      <formula>VARCHAR(&apos;18.1-80.2&apos;</formula>
       <argument type='localstr' />
     </function>
 	<function group='numeric' name='ABS' return-type='real'>
@@ -482,7 +482,8 @@
 		<argument type='str' />
     </function>
     <date-function name='DATEDIFF' return-type='int'>
-		<formula>TIMESTAMPDIFF(SECOND,CAST(%2 AS TIMESTAMP(4)),%3)/86400/7</formula>
+		<formula>CAST(ROUND(TIMESTAMPDIFF(DAY,%2,%3)/7.00,0) AS iNTegEr)</formula> <!--Sunil : Added Formula using DAY-->
+		<!--<formula>TIMESTAMPDIFF(SECOND,CAST(%2 AS TIMESTAMP(4)),%3)/86400/7</formula> -->
         <formula part='year'>(yEaR(%3) - YEAR(%2))</formula>
 		<formula part='quarter'>ROUND(int(MONTHS_BETWEEN(DATE_TRUNC(&apos;QUARTER&apos;,%3),date_trunc(&apos;QUARTER&apos;,%2))/3),0)</formula>
         <formula part='month'>TIMESTAMPDIFF(MONTH,%2, %3)</formula>
@@ -521,7 +522,7 @@
 		<formula part='dayofyear'>TIMESTAMPDIFF(DAY,%2, CAST(%3 AS ANSIDATE))</formula>
         <formula part='day'>TIMESTAMPDIFF(DAY,%2, CAST(%3 AS ANSIDATE))</formula>
 		<formula part='weekday'>TIMESTAMPDIFF(DAY,%2, CAST(%3 AS ANSIDATE))</formula>
-		<formula  part='week'>ROUND(TIMESTAMPDIFF(DAY,%2, %3/7.0000,0)</formula>
+		<formula  part='week'>ROUND(TIMESTAMPDIFF(DAY,%2, CAST(%3 AS ANSIDATE)/7.0000,0)</formula> <!-- Sunil : Added CAST(%3 AS ANSIDATE) -->
         <formula part='hour'>TIMESTAMPDIFF(HOUR,CAST(%2 AS TIMESTAMP), CAST(%3 AS TIMESTAMP))</formula>
 		<formula part='minute'>TIMESTAMPDIFF(MINUTE,CAST(%2 AS TIMESTAMP), CAST(%3 AS TIMESTAMP))</formula>
 		<formula part='second'>TIMESTAMPDIFF(SECOND,CAST(%2 AS TIMESTAMP), CAST(%3 AS TIMESTAMP))</formula>
@@ -554,7 +555,7 @@
 		<formula part='dayofyear'>TIMESTAMPDIFF(DAY,CAST(%2 AS TIMESTAMP(2)), %3)</formula>
         <formula part='day'>TIMESTAMPDIFF(DAY,CAST(%2 AS ANSIDATE), %3)</formula>
 		<formula part='weekday'>TIMESTAMPDIFF(DAY,CAST(%2 AS ANSIDATE), %3)</formula>
-		<formula  part='week'>ROUND(TIMESTAMPDIFF(DAY,CAST(%2), %3)/7.000000,0)</formula>
+		<formula  part='week'>ROUND(TIMESTAMPDIFF(DAY,CAST(%2 AS ANSIDATE), %3)/7.000000,0)</formula><!--Sunil : Added %2 AS ANSIDATE-->
         <formula part='hour'>TIMESTAMPDIFF(HOUR,%2, CAST(%3 AS TIMESTAMP))</formula>
 		<formula part='minute'>TIMESTAMPDIFF(MINUTE,%2, CAST(%3 AS TIMESTAMP))</formula>
 		<formula part='second'>TIMESTAMPDIFF(SECOND,%2, CAST(%3 AS TIMESTAMP))</formula>
